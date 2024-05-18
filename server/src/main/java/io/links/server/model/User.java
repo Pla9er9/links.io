@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @Document("user")
 @Data
@@ -21,7 +22,8 @@ public class User implements UserDetails {
     private String password;
     private boolean isEmailVerified;
     private LocalDateTime joinedDateTime;
-
+    private String description;
+    private List<String> links;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

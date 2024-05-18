@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -32,13 +33,15 @@ public class UserService {
 
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
 
-        User user = User.builder()
-                .username(userDTO.getUsername())
-                .email(userDTO.getEmail())
-                .password(encodedPassword)
-                .joinedDateTime(LocalDateTime.now())
-                .isEmailVerified(false)
-                .build();
+    User user = User.builder()
+            .username(userDTO.getUsername())
+            .email(userDTO.getEmail())
+            .password(encodedPassword)
+            .joinedDateTime(LocalDateTime.now())
+            .isEmailVerified(false)
+            .description("")
+            .links(List.of())
+            .build();
 
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
