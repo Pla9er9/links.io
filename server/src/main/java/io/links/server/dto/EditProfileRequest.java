@@ -12,6 +12,7 @@ import java.util.List;
 public class EditProfileRequest {
     @NotNull
     private String description;
+    @NotNull
     @Size(max = 6)
     private List<String> links;
 }
