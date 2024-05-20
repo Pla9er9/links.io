@@ -2,6 +2,7 @@ package io.links.server.model;
 
 import lombok.Builder;
 import lombok.Data;
+import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,6 +25,8 @@ public class User implements UserDetails {
     private LocalDateTime joinedDateTime;
     private String description;
     private List<String> links;
+    private Binary avatar;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
