@@ -1,0 +1,20 @@
+spring.application.name=server
+
+spring.data.mongodb.uri=
+spring.data.mongodb.database=
+
+logging.pattern.console=%d{yyyy-MMM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{15}) - %msg %n
+
+secret.key=
+
+server.error.include-binding-errors=always
+
+spring.redis.host=
+spring.redis.port=
+
+spring.cache.redis.time-to-live=60000
+spring.cache.cache-names=Profile
+
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=10MB
+spring.servlet.multipart.enabled=true
