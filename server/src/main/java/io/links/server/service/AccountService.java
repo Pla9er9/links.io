@@ -3,8 +3,11 @@ package io.links.server.service;
 import io.links.server.dto.EditProfileRequest;
 import io.links.server.dto.ProfileDto;
 import io.links.server.exception.ValidationException;
+import io.links.server.model.Image;
 import io.links.server.model.User;
+import io.links.server.repository.ImageRepository;
 import io.links.server.repository.UserRepository;
+import io.links.server.validator.UploadedFileValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.BsonBinarySubType;
@@ -19,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Service
@@ -27,6 +31,7 @@ import java.util.Arrays;
 public class AccountService {
 
     private final UserRepository userRepository;
+    private final ImageRepository imageRepository;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
@@ -58,12 +63,9 @@ public class AccountService {
     }
 
     public void uploadAvatar(MultipartFile file, String name) {
-        if (file == null) {
-            throw new ValidationException("File not provided");
-        }
+        final byte[] bytes;
 
-        byte[] bytes;
-        User user = userRepository.findByUsername(name).orElseThrow();
+        UploadedFileValidator.validate(file, "image/");
 
         try {
             bytes = file.getBytes();
@@ -76,13 +78,21 @@ public class AccountService {
             );
         }
 
+        User user = userRepository.findByUsername(name).orElseThrow();
+
         var binary = new Binary(
                 BsonBinarySubType.BINARY,
                 bytes
         );
 
-        user.setAvatar(binary);
-        userRepository.save(user);
+        var image = Image
+                .builder()
+                .user(user)
+                .image(binary)
+                .uploadTime(LocalDateTime.now())
+                .build();
+
+        imageRepository.save(image);
     }
 
     public void changeEmail(String email, String username) {

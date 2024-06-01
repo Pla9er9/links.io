@@ -23,7 +23,7 @@ public class ProfileController {
         return userService.getProfile(username);
     }
 
-    @GetMapping("/{username}/avatar")
+    @GetMapping(value = "/{username}/avatar", produces = "image/*")
     public ResponseEntity<byte[]> getAvatar(@PathVariable String username) {
         return ResponseEntity.ok(userService.getAvatar(username));
     }

@@ -1,12 +1,8 @@
-<script>
+<script lang="ts">
 	import { updateDialog } from '$lib/dialogStore';
+	import fetcher from '$lib/fetcher';
 	import { Input, InputAddon, ButtonGroup, Button, Helper } from 'flowbite-svelte';
-	import {
-		UserCircleSolid,
-		LockSolid,
-		LinkOutline,
-		EnvelopeSolid
-	} from 'flowbite-svelte-icons';
+	import { UserCircleSolid, LockSolid, LinkOutline, EnvelopeSolid } from 'flowbite-svelte-icons';
 	import { email, maxLength, minLength, required, useForm } from 'svelte-use-form';
 
 	const iconStyles =
@@ -18,6 +14,24 @@
 		email: { validators: [required, email] },
 		password: { validators: [required, minLength(6), maxLength(50)] }
 	});
+
+	async function register() {
+		const res = await fetcher('/api/auth/register', {
+			method: 'POST',
+			apiUrlPrefix: false,
+			body: {
+				username: $form.username.value,
+				email: $form.email.value,
+				password: $form.password.value
+			}
+		});
+
+		if (!res.ok) {
+			const body = await res.json()
+			console.error(body)
+			alert("Something went wrong")
+		}
+	}
 </script>
 
 <div class="dialog authDialog column">
@@ -26,7 +40,7 @@
 		<i class="ml-2 text-3xl font-semibold text-white">Links.io</i>
 	</div>
 	<h1 class="text-md mb-8 text-white">Registration</h1>
-	<form use:form class="w-full">
+	<form use:form class="w-full" on:submit={(e) => e.preventDefault()}>
 		<div class="w-full">
 			<ButtonGroup class="w-full">
 				<InputAddon>
@@ -64,7 +78,9 @@
 				>Password should be between 6 and 50 characters</Helper
 			>
 		{/if}
-		<Button disabled={!$form.valid} class="mr-[auto] mt-5 w-full">Sign in</Button>
+		<Button on:click={register} disabled={!$form.valid} class="mr-[auto] mt-5 w-full"
+			>Sign in</Button
+		>
 	</form>
 	<button on:click={() => updateDialog('login')} class="mt-4 text-sm text-white">
 		Already have an account? Sign in!

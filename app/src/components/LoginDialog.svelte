@@ -1,5 +1,7 @@
-<script>
-	import { updateDialog } from '$lib/dialogStore';
+<script lang="ts">
+	import { updateDialog, type dialog } from '$lib/dialogStore';
+	import fetcher from '$lib/fetcher';
+	import { toastStore, type toast } from '$lib/toastStore';
 	import { Input, InputAddon, ButtonGroup, Button, Helper } from 'flowbite-svelte';
 	import { UserCircleSolid, LockSolid, LinkOutline } from 'flowbite-svelte-icons';
 	import { useForm, required, minLength, maxLength } from 'svelte-use-form';
@@ -12,6 +14,47 @@
 		username: { validators: [required, minLength(3), maxLength(22)] },
 		password: { validators: [required, minLength(6), maxLength(50)] }
 	});
+
+	async function login() {
+		const res = await fetcher('/api/auth/login', {
+			method: 'POST',
+			apiUrlPrefix: false,
+			body: {
+				username: $form.username.value,
+				password: $form.password.value
+			}
+		});
+
+		if (res.ok) {
+			window.location.reload();
+			return;
+		}
+
+		let t: toast;
+		if (res.status === 403) {
+			t = {
+				title: 'Wrong credentials',
+				text: 'Wrong username or password passed!',
+				variant: 'danger'
+			};
+		} else {
+			t = {
+				title: 'Unknown Error',
+				text: 'Unknown Error occurept, try later',
+				variant: 'danger'
+			};
+		}
+		toastStore.update(toasts => {
+			let _toast: toast = {
+				title: t.title,
+				text: t.text,
+				variant: t.variant
+			};
+			toasts.push(_toast)
+			return toasts
+		})
+		console.error(res);
+	}
 </script>
 
 <div class="dialog authDialog column">
@@ -20,7 +63,7 @@
 		<i class="ml-2 text-3xl font-semibold text-white">Links.io</i>
 	</div>
 	<h1 class="text-md mb-8 text-white">Welcome back</h1>
-	<form use:form class="w-full">
+	<form use:form class="w-full" on:submit={(e) => e.preventDefault()}>
 		<div class="w-full">
 			<ButtonGroup class="w-full">
 				<InputAddon>
@@ -47,7 +90,7 @@
 				>Password should be between 6 and 50 characters</Helper
 			>
 		{/if}
-		<Button disabled={!$form.valid} class="mr-[auto] mt-5 w-full">Sign in</Button>
+		<Button disabled={!$form.valid} on:click={login} class="mr-[auto] mt-5 w-full">Sign in</Button>
 	</form>
 	<button on:click={() => updateDialog('registration')} class="mt-4 text-sm text-white">
 		New here? Sign up now!
