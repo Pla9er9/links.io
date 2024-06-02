@@ -32,14 +32,13 @@ export default async function fetcher(
         stringBody = body;
     }
 
-    let res
     let requestContentType = {}
 
     if (!noContentType) {
         requestContentType = { 'Content-type': contentType }
     }
 
-    res = await fetch(apiPrefix + url, {
+    const res = await fetch(apiPrefix + url, {
         method: method,
         body: method === "GET" ? null : stringify ? stringBody : body,
         headers: {
@@ -47,7 +46,8 @@ export default async function fetcher(
             ...requestContentType,
             ...headers
         },
-        redirect: 'follow'
+        redirect: 'follow',
+        cache: "no-cache"
     });
 
     if (res.redirected) {
