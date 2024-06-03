@@ -1,5 +1,6 @@
 package io.links.server.dto;
 
+import io.links.server.model.Link;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.redis.core.RedisHash;
@@ -14,6 +15,6 @@ import java.util.List;
 public class ProfileDto implements Serializable {
     private String username;
     private String description;
-    private List<String> links;
+    private List<Link> links;
     private LocalDate joinedDate;
 }

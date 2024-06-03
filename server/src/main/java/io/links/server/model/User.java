@@ -24,7 +24,7 @@ public class User implements UserDetails {
     private boolean isEmailVerified;
     private LocalDateTime joinedDateTime;
     private String description;
-    private List<String> links;
+    private List<Link> links;
     private Binary avatar;
 
     @Override

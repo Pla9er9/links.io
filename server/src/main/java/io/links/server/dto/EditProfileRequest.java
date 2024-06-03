@@ -1,5 +1,6 @@
 package io.links.server.dto;
 
+import io.links.server.model.Link;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -14,5 +15,5 @@ public class EditProfileRequest {
     private String description;
     @NotNull
     @Size(max = 6)
-    private List<String> links;
+    private List<Link> links;
 }
