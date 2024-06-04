@@ -1,9 +1,6 @@
 package io.links.server.controller;
 
-import io.links.server.dto.ChangeEmailRequest;
-import io.links.server.dto.ChangePasswordRequest;
-import io.links.server.dto.EditProfileRequest;
-import io.links.server.dto.ProfileDto;
+import io.links.server.dto.*;
 import io.links.server.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class AccountController {
 
     private final AccountService accountService;
+
+    @GetMapping
+    public AccountDto getAccount(Authentication authentication) {
+        return accountService.getAccount(authentication.getName());
+    }
+
 
     @PutMapping("/profile")
     @CachePut(value= "Profile", key="#authentication.name")

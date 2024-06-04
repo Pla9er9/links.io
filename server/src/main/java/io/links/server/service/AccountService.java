@@ -1,5 +1,6 @@
 package io.links.server.service;
 
+import io.links.server.dto.AccountDto;
 import io.links.server.dto.EditProfileRequest;
 import io.links.server.dto.ProfileDto;
 import io.links.server.exception.ValidationException;
@@ -128,5 +129,20 @@ public class AccountService {
             );
             userRepository.save(user);
         }
+    }
+
+    public AccountDto getAccount(String name) {
+        var user = userRepository.findByUsername(name)
+                .orElseThrow();
+
+        return new AccountDto(
+            user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getDescription(),
+                user.getLinks(),
+                user.getJoinedDateTime(),
+                user.isEmailVerified()
+        );
     }
 }
