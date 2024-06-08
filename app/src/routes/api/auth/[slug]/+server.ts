@@ -16,7 +16,8 @@ export async function POST({request, params, cookies}) {
             throw error(404)
         }
         if (response?.status !== 200) {
-            throw error(response.status)
+            const message = await response.json()
+            throw error(response.status, message)
         }
 
         const body = await response.json()
