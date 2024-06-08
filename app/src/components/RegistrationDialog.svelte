@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { updateDialog } from '$lib/dialogStore';
 	import fetcher from '$lib/fetcher';
+	import { toastStore, type toast } from '$lib/toastStore';
 	import { Input, InputAddon, ButtonGroup, Button, Helper } from 'flowbite-svelte';
 	import { UserCircleSolid, LockSolid, LinkOutline, EnvelopeSolid } from 'flowbite-svelte-icons';
 	import { email, maxLength, minLength, required, useForm } from 'svelte-use-form';
@@ -16,6 +17,8 @@
 	});
 
 	async function register() {
+		let t: toast;
+
 		const res = await fetcher('/api/auth/register', {
 			method: 'POST',
 			apiUrlPrefix: false,
@@ -26,11 +29,35 @@
 			}
 		});
 
-		if (!res.ok) {
-			const body = await res.json()
-			console.error(body)
-			alert("Something went wrong")
+		if (res.ok) {
+			window.location.reload();
+			return
 		}
+
+		const body = await res.json();
+
+		console.log(body);
+
+		const errors: string[] = body.errors;
+
+		if (res.status === 400) {
+			t = {
+				title: 'Wrong credentials',
+				text: errors.join('\n'),
+				variant: 'danger'
+			};
+		} else {
+			t = {
+				title: 'Unknown Error',
+				text: 'Unknown Error occurept, try later',
+				variant: 'danger'
+			};
+		}
+
+		toastStore.update((toasts) => {
+			toasts.push(t);
+			return toasts;
+		});
 	}
 </script>
 
