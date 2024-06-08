@@ -30,6 +30,6 @@
 			</a>
 		</div>
 	{:else}
-		<Button pill outline on:click={() => updateDialog('registration')}>Sign In</Button>
+		<Button pill outline on:click={() => updateDialog('login')}>Sign In</Button>
 	{/if}
 </Navbar>
