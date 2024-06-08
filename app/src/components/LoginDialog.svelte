@@ -45,15 +45,9 @@
 			};
 		}
 		toastStore.update(toasts => {
-			let _toast: toast = {
-				title: t.title,
-				text: t.text,
-				variant: t.variant
-			};
-			toasts.push(_toast)
+			toasts.push(t)
 			return toasts
 		})
-		console.error(res);
 	}
 </script>
 
