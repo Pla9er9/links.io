@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.TimerTask;
 
 @Slf4j
@@ -36,40 +37,28 @@ public class ResizeAndSaveImageTask extends TimerTask {
             return;
         }
 
-        log.info("Procesing image with ID - " + imageID);
-
         var imageOptional = imageRepository.findById(imageID);
         if (imageOptional.isEmpty()) {
             return;
         }
 
         Image image = imageOptional.get();
-        User user = image.getUser();
+        User imageOwner = image.getUser();
 
         var bytes = image.getImage().getData();
 
-        InputStream inputStream = new ByteArrayInputStream(bytes);
+        var resizedImageOptional = imageService.resizeImage(bytes);
+        if (resizedImageOptional.isEmpty()) return;
 
-        BufferedImage bufferedImage;
+        saveAvatar(resizedImageOptional.get(), imageOwner);
+        imageRepository.deleteById(imageID);
+    }
 
-        try {
-            bufferedImage = ImageIO.read(inputStream);
-
-        } catch (IOException e) {
-            log.error(Arrays.toString(
-                    e.getStackTrace()
-            ));
-            log.error(e.getMessage());
-            return;
-        }
-
-        var resizedImage = imageService.resizeImage(bufferedImage);
-
+    public void saveAvatar(byte[] image, User user) {
         var binary = new Binary(
                 BsonBinarySubType.BINARY,
-                resizedImage
+                image
         );
-
         user.setAvatar(binary);
         userRepository.save(user);
     }
