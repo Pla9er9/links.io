@@ -12,8 +12,14 @@
 		<span class="text-5xl">{profile.username.slice(0, 2)}</span>
 	</Avatar>
 	<h1 class="mt-8 text-5xl font-black text-pink-100">{profile.username}</h1>
-	<p class="text-medium mb-12 mt-4 text-gray-400">{profile.description}</p>
+	<p
+		class="text-medium mb-12 mt-4 max-w-[400px] w-[80vw] text-center text-gray-400"
+		style="overflow-wrap: break-word;
+"
+	>
+		{profile.description}
+	</p>
 	{#each profile.links as link}
-		<Link url="https://{link.url}" text={link.text} />
+		<Link url={link.url} text={link.text} />
 	{/each}
 </div>
