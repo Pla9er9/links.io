@@ -42,7 +42,7 @@ public class AccountController {
     }
 
     @PostMapping("/avatar")
-    public void uploadAvatar(MultipartFile file, Authentication authentication) {
+    public void uploadAvatar(@RequestParam("file") MultipartFile file, Authentication authentication) {
         accountService.uploadAvatar(file, authentication.getName());
     }
 
