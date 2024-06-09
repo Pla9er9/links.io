@@ -9,6 +9,7 @@ import io.links.server.model.User;
 import io.links.server.repository.ImageRepository;
 import io.links.server.repository.UserRepository;
 import io.links.server.validator.UploadedFileValidator;
+import io.links.server.worker.ImageTaskWorker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.BsonBinarySubType;
@@ -38,6 +39,17 @@ public class AccountService {
 
     public ProfileDto editProfile(EditProfileRequest editProfileRequest, String username) {
         User user = userRepository.findByUsername(username).orElseThrow();
+
+        String passedUsername = editProfileRequest.getUsername();
+
+        if (!username.equals(passedUsername)) {
+            var optionalUser = userRepository.findByUsername(passedUsername);
+            if (optionalUser.isPresent()) {
+                throw new ValidationException("Username already taken");
+            }
+
+            user.setUsername(passedUsername);
+        }
 
         user.setDescription(editProfileRequest.getDescription());
         user.setLinks(editProfileRequest.getLinks());
@@ -93,7 +105,9 @@ public class AccountService {
                 .uploadTime(LocalDateTime.now())
                 .build();
 
-        imageRepository.save(image);
+        image = imageRepository.save(image);
+
+        ImageTaskWorker.queueOfImagesToProcess.add(image.getId());
     }
 
     public void changeEmail(String email, String username) {
@@ -142,7 +156,8 @@ public class AccountService {
                 user.getDescription(),
                 user.getLinks(),
                 user.getJoinedDateTime(),
-                user.isEmailVerified()
+                user.isEmailVerified(),
+                user.getAvatar() != null
         );
     }
 }

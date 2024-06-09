@@ -12,5 +12,6 @@ public record AccountDto(
         String description,
         List<Link> links,
         LocalDateTime joinedDateTime,
-        boolean isEmailVerified
+        boolean isEmailVerified,
+        boolean hasAccountAvatar
         ) {}
