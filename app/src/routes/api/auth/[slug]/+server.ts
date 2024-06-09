@@ -1,39 +1,45 @@
-import fetcher from "$lib/fetcher";
-import { error } from "@sveltejs/kit";
+import fetcher from '$lib/fetcher';
+import { error } from '@sveltejs/kit';
 
-export async function POST({request, params, cookies}) {
-        const data = await request.json();
+export async function POST({ request, params, cookies }) {
+	const slug = params.slug ?? '';
+	checkIfRouteIsCorrect(slug);
 
-        const slug = params.slug ?? ""
-        checkIfRouteIsCorrect(slug)
+	if (slug === 'logout') {
+		cookies.delete('jwtToken', { path: '/' });
+		return new Response();
+	}
 
-        const response = await fetcher(`/auth/${slug}`, {
-            method: 'POST',
-            body: data,
-        })
+	const data = await request.json();
 
-        if (!response) {
-            throw error(404)
-        }
-        if (response?.status !== 200) {
-            const message = await response.json()
-            throw error(response.status, message)
-        }
+	const response = await fetcher(`/auth/${slug}`, {
+		method: 'POST',
+		body: data
+	});
 
-        const body = await response.json()
+	if (!response) {
+		throw error(404);
+	}
+	if (response?.status !== 200) {
+		const message = await response.json();
+		throw error(response.status, message);
+	}
 
-        cookies.set('jwtToken', body.token, {
-            path: '/',
-            httpOnly: true,
-            sameSite: 'strict',
-            secure: true,
-            maxAge: 60 * 60 * 24 * 365 * 10
-        });
-        return new Response();
-};
+	const body = await response.json();
+
+	cookies.set('jwtToken', body.token, {
+		path: '/',
+		httpOnly: true,
+		sameSite: 'strict',
+		secure: true,
+		maxAge: 60 * 60 * 24 * 365 * 10
+	});
+	return new Response();
+}
 
 function checkIfRouteIsCorrect(slug: string) {
-    if (slug !== "login" && slug !== "register") {
-        throw error(404)
-    }
+	const routes = ['login', 'register', 'logout'];
+	if (!routes.includes(slug)) {
+		throw error(404);
+	}
 }
