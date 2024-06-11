@@ -23,7 +23,7 @@ public class ImageTaskWorker {
                 = executorService.scheduleAtFixedRate(
                         resizeAndSaveImageTask,
                         0,
-                        100,
+                        10,
                         TimeUnit.MILLISECONDS
                 );
     }
