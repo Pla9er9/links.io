@@ -15,6 +15,13 @@ spring.redis.port=
 spring.cache.redis.time-to-live=60000
 spring.cache.cache-names=Profile
 
+spring.mail.host=
+spring.mail.port=
+spring.mail.username=
+spring.mail.password=
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
 spring.servlet.multipart.max-file-size=10MB
 spring.servlet.multipart.max-request-size=10MB
 spring.servlet.multipart.enabled=true
