@@ -1,9 +1,7 @@
 package io.links.server.service;
 
 import io.links.server.utils.LoggingUtils;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -18,18 +16,15 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ImageService {
 
     @SuppressWarnings("FieldCanBeLocal")
     private final int targetHeight = 200;
     @SuppressWarnings("FieldCanBeLocal")
     private final int targetWidth = 200;
-    private final LoggingUtils loggingUtils;
-
-    public ImageService(LoggingUtils loggingUtils) {
-        this.loggingUtils = loggingUtils;
-        loggingUtils.setClassname(ImageService.class);
-    }
+    private final LoggingUtils loggingUtils
+            = LoggingUtils.getLoggingUtils(this.getClass());
 
     public Optional<byte[]> resizeImage(byte[] bytes) {
         try {
