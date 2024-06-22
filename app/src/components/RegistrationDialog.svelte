@@ -19,9 +19,8 @@
 	async function register() {
 		let t: toast;
 
-		const res = await fetcher('/api/auth/register', {
+		const res = await fetcher('/auth/register', {
 			method: 'POST',
-			apiUrlPrefix: false,
 			body: {
 				username: $form.username.value,
 				email: $form.email.value,
@@ -30,17 +29,17 @@
 		});
 
 		if (res.ok) {
-			window.location.reload();
-			return
+			t = {
+				title: 'Succes',
+				text: 'Verification link has been send to your email',
+				variant: 'succes'
+			};
 		}
+		else if (res.status === 400) {
+			const body = await res.json();
+			console.log(body);
+			const errors: string[] = body.errors;
 
-		const body = await res.json();
-
-		console.log(body);
-
-		const errors: string[] = body.errors;
-
-		if (res.status === 400) {
 			t = {
 				title: 'Wrong credentials',
 				text: errors.join('\n'),

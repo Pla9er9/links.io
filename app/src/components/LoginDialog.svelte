@@ -16,22 +16,24 @@
 	});
 
 	async function login() {
-		const res = await fetcher('/api/auth/login', {
+		const res = await fetcher('/auth/login', {
 			method: 'POST',
-			apiUrlPrefix: false,
 			body: {
 				username: $form.username.value,
 				password: $form.password.value
 			}
 		});
 
-		if (res.ok) {
-			window.location.reload();
-			return;
-		}
-
 		let t: toast;
-		if (res.status === 403) {
+
+		if (res.ok) {
+			t = {
+				title: 'Succes',
+				text: 'Verification link has been send to your email',
+				variant: 'succes'
+			};
+		}
+		 else if (res.status === 403) {
 			t = {
 				title: 'Wrong credentials',
 				text: 'Wrong username or password passed!',
@@ -92,15 +94,8 @@
 	<p class="my-4 text-xs font-medium text-gray-400">Or Sign in with</p>
 	<Button outline color="dark">
 		<div class="row w-[120px] justify-center">
-			<img src="google_logo.webp" alt="Google logo" />
+			<img src="google_logo.webp" class="w-4 mr-2" alt="Google logo" />
 			Google
 		</div>
 	</Button>
 </div>
-
-<style>
-	img {
-		width: 18px;
-		margin-right: 10px;
-	}
-</style>
