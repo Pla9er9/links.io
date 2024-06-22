@@ -2,6 +2,9 @@
     import { dialogStroe, updateDialog, type dialog } from "$lib/dialogStore";
 	import LoginDialog from "./LoginDialog.svelte";
 	import RegistrationDialog from "./RegistrationDialog.svelte";
+    import ChangeAccountProperty from './ChangeAccountPropertyDialog.svelte'
+	import ChangeEmailDialog from "./ChangeEmailDialog.svelte";
+	import ChangePasswordDialog from "./ChangePasswordDialog.svelte";
 
     let currentDialog: dialog = null
     
@@ -17,6 +20,10 @@
     <RegistrationDialog />
 {:else if currentDialog === "login"}
     <LoginDialog />
+{:else if currentDialog === "changeEmail"}
+    <ChangeEmailDialog />
+{:else if currentDialog === "changePassword"}
+    <ChangePasswordDialog />
 {/if}
 
 <style>

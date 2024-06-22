@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 
-export type dialog = "registration" | "login" | null
+export type dialog = "registration" | "login" | "changeEmail" | "changePassword" | null
 
 export const dialogStroe = writable<dialog>()
 
