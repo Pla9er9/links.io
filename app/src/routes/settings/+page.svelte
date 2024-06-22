@@ -10,10 +10,11 @@
 	import { maxLength, minLength, required, useForm } from 'svelte-use-form';
 	import LinksEditor from '$components/LinksEdittor.svelte';
 	import FileInput from '$components/AvatarInput.svelte';
-	import fetcher from '$lib/fetcher.js';
-	import { toastStore, type toast } from '$lib/toastStore.js';
+	import fetcher from '$lib/fetcher';
+	import { toastStore, type toast } from '$lib/toastStore';
 	import { get } from 'svelte/store';
-	import { userStore } from '$lib/userStore.js';
+	import { userStore } from '$lib/userStore';
+	import { dialogStroe } from '$lib/dialogStore';
 	import { PUBLIC_SERVER_URL } from '$env/static/public';
 
 	export let data;
@@ -123,6 +124,14 @@
 		});
 	}
 
+	function changePassword() {
+		dialogStroe.update(u => "changePassword")
+	}
+
+	function changeEmail() {
+		dialogStroe.update(u => "changeEmail")
+	}
+
 	async function logout() {
 		const res = await fetch('/api/auth/logout', {
 			method: "POST"
@@ -199,11 +208,11 @@
 			<CheckOutline />
 			<span>Confirm changes</span>
 		</Button>
-		<Button class={iconButtonTailwindClasses} color="dark">
+		<Button on:click={changePassword} class={iconButtonTailwindClasses} color="dark">
 			<LockOutline />
 			<span>Change Password</span>
 		</Button>
-		<Button class={iconButtonTailwindClasses} color="dark">
+		<Button on:click={changeEmail} class={iconButtonTailwindClasses} color="dark">
 			<MailBoxOutline />
 			<span>Change Email</span>
 		</Button>
